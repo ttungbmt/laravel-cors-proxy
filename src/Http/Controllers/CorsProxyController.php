@@ -13,18 +13,23 @@ class CorsProxyController extends Controller
     /**
      * @throws \Throwable
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, $path)
     {
-        $validator = Validator::make($request->all(), [
-            'url' => 'required',
-        ]);
+        if($path){
+            $url = $path;
+        } else {
+            $validator = Validator::make($request->all(), [
+                'url' => 'required',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'The given data was invalid.', 'errors' => $validator->getMessageBag()], 500);
+            if ($validator->fails()) {
+                return response()->json(['status' => 'error', 'message' => 'The given data was invalid.', 'errors' => $validator->getMessageBag()], 500);
+            }
+
+            $url = $this->getUrl();
         }
-
-        $url = $this->getUrl();
         $params = $this->getParams();
+
         $method = Str::lower(request()->input('method', 'GET'));
 
         $request = Http::{$method}($url, $params);
