@@ -30,13 +30,13 @@ class CorsProxyController extends Controller
         }
         $params = $this->getParams();
 
+        $headers = collect($request->header())->except(['host'])->all();
+
         $method = Str::lower(request()->input('method', 'GET'));
 
-        $request = Http::{$method}($url, $params);
+        $newRequest = Http::withHeaders($headers)->{$method}($url, $params);
 
-        $headers = collect($request->headers())->except(['Transfer-Encoding']);
-
-        return response($request->body(), $request->status())->withHeaders($headers);
+        return response($newRequest->body(), $newRequest->status())->withHeaders($headers);
     }
 
     protected function getUrl(){
