@@ -1,10 +1,10 @@
 <?php
 
-namespace ttungbmt\CorsProxy;
+namespace TungTT\CorsProxy;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use ttungbmt\CorsProxy\Commands\CorsProxyCommand;
+use TungTT\CorsProxy\Commands\CorsProxyCommand;
 
 class CorsProxyServiceProvider extends PackageServiceProvider
 {

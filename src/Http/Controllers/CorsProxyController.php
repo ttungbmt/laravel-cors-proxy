@@ -1,6 +1,6 @@
 <?php
 
-namespace ttungbmt\CorsProxy\Http\Controllers;
+namespace TungTT\CorsProxy\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class CorsProxyController extends Controller
     /**
      * @throws \Throwable
      */
-    public function __invoke(Request $request, $path)
+    public function __invoke(Request $request, $path = null)
     {
         if($path){
             $url = $path;
@@ -28,7 +28,10 @@ class CorsProxyController extends Controller
 
             $url = $this->getUrl();
         }
+
         $params = $this->getParams();
+
+        $this->handleParamArray($params, $url);
 
         $headers = collect($request->header())->except(['host'])->all();
 
@@ -38,6 +41,19 @@ class CorsProxyController extends Controller
 
         return response($newRequest->body(), $newRequest->status())->withHeaders($headers);
     }
+
+    protected function handleParamArray(&$params, &$url){
+        $paramArrStr = '';
+        foreach ($params as $key => $param){
+            if(is_array($param)){
+                $paramArrStr .= ($paramArrStr === '' ? '' : '&').collect($param)->map(fn($value) => "{$key}[]={$value}")->join('&');
+                unset($params[$key]);
+            }
+        }
+
+        if($paramArrStr) $url = "{$url}?{$paramArrStr}";
+    }
+
 
     protected function getUrl(){
         $url = request()->input('url');
