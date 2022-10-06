@@ -33,7 +33,10 @@ class CorsProxyController extends Controller
 
         $this->handleParamArray($params, $url);
 
-        $headers = collect($request->header())->except(['host'])->all();
+        $headers = collect($request->header())->except([
+            'host',
+            'content-length',
+        ])->all();
 
         $method = Str::lower(request()->input('method', 'GET'));
 
