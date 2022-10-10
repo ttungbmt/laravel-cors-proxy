@@ -30,6 +30,8 @@ class CorsProxyController extends Controller
         }
 
         $params = $this->getParams();
+        
+        $url= Str::replaceFirst('https://geoportal-uat.vntts.vn', 'http://geoportal-uat.vntts.vn', $url);
 
         $this->handleParamArray($params, $url);
 
